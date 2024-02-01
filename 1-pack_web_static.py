@@ -1,20 +1,21 @@
 #!/usr/bin/python3
-"""script that generates a .tgz archive from the contents of the web_static"""
-
-from fabric.api import local, task
+"""
+    Fabric script that generates tgz archive from contents of web_static
+"""
+from fabric.api import local
 from datetime import datetime
 
 
-@task
 def do_pack():
-    """archive web_static"""
+    """
+        generates a .tgz archine from contents of web_static
+    """
+    time = datetime.utcnow().strftime('%Y%m%d%H%M%S')
+    file_name = "versions/web_static_{}.tgz".format(time)
     try:
-
-        f_current_time = datetime.now().strftime('%Y%m%d%H%M%S')
-        file_name = f'web_static_{f_current_time}.tgz web_static'
-        local("mkdir -p versions")
-        local(f"tar -cvzf versions/{file_name}")
-        return "versions/"
-    except Exception as e:
-       
+        local("mkdir -p ./versions")
+        local("tar --create --verbose -z --file={} ./web_static"
+              .format(file_name))
+        return file_name
+    except:
         return None
